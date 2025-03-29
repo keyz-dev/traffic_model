@@ -18,7 +18,7 @@ def main():
     # Check command-line arguments
     if len(sys.argv) not in [2, 3]:
         sys.exit("Usage: python traffic.py data_directory [model.h5]")
-
+    
     # Get image arrays and labels for all image files
     images, labels = load_data(sys.argv[1])
 
@@ -58,7 +58,35 @@ def load_data(data_dir):
     be a list of integer labels, representing the categories for each of the
     corresponding `images`.
     """
-    raise NotImplementedError
+    images = []
+    labels = []
+    
+    try:
+    # Loop through category directories
+        for category in range(NUM_CATEGORIES):
+            category_path = os.path.join(data_dir, str(category))
+            
+            if not os.path.exists(category_path):
+                continue
+
+            # Loop through each image in the category directory
+            for file in os.listdir(category_path):
+                file_path = os.path.join(category_path, file)
+                # Read image using OpenCV
+                image = cv2.imread(file_path)
+                if image is None:
+                    continue
+                
+                # Resize image
+                image = cv2.resize(image, (IMG_WIDTH, IMG_HEIGHT))
+                # Append images and labels to the respective list
+                images.append(image)
+                labels.append(category)
+                
+        return np.array(images), np.array(labels)
+    
+    except:
+        raise NotImplementedError
 
 
 def get_model():
@@ -67,8 +95,38 @@ def get_model():
     `input_shape` of the first layer is `(IMG_WIDTH, IMG_HEIGHT, 3)`.
     The output layer should have `NUM_CATEGORIES` units, one for each category.
     """
-    raise NotImplementedError
+    
+    try:
+        # Create a sequential model
+        model = tf.keras.models.Sequential()
 
+        # Add a convolutional layer with 32 filters, a 3x3 kernel, ReLU activation, and input shape
+        model.add(tf.keras.layers.Conv2D(
+            32, (3, 3), activation="relu", input_shape=(IMG_WIDTH, IMG_HEIGHT, 3)
+        ))
+
+        # Add a max-pooling layer with a 2x2 pool size
+        model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2)))
+        model.add(tf.keras.layers.Conv2D(64, (3, 3), activation="relu"))
+
+        model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2)))
+        model.add(tf.keras.layers.Flatten())
+        model.add(tf.keras.layers.Dense(128, activation="relu"))
+
+        # Add a dropout layer to reduce overfitting
+        model.add(tf.keras.layers.Dropout(0.5))
+        model.add(tf.keras.layers.Dense(NUM_CATEGORIES, activation="softmax"))
+
+        # Compile the model
+        model.compile(
+            optimizer="adam",
+            loss="categorical_crossentropy",
+            metrics=["accuracy"]
+        )
+
+        return model
+    except:    
+        raise NotImplementedError
 
 if __name__ == "__main__":
     main()
