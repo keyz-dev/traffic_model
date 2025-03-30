@@ -110,7 +110,7 @@ def open_file():
         # Predict the traffic sign category
         number, sign, probability  = predict_image(file_path)
         if sign and probability:
-            results = f"Sign: {sign}, Accuracy: {probability:.2f}"
+            results = f"Prediction \n Sign: {sign}, Accuracy: {probability:.2f}"
             result_label.config(text=results)
     except Exception as e:
         messagebox.showerror("Error", f"Failed to open image: {e}")
@@ -122,8 +122,8 @@ root.title("Traffic Sign Predictor")
 # Set dimensions of the interface
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
-window_width = 450
-window_height = 350
+window_width = 500
+window_height = 400
 
 # dimension calculation
 x = (screen_width/2) - (window_width/2)
@@ -135,14 +135,17 @@ root.geometry(f'{window_width}x{window_height}+{int(x)}+{int(y)}')
 frame = tk.Frame(root)
 frame.pack(pady=20)
 
-image_label = tk.Label(frame)
-image_label.pack()
+text_label = tk.Label(frame, text="Kindly Upload A Traffic Sign Image", font=("Arial", 12, "bold"))
+text_label.pack()
 
 button = tk.Button(frame, text="Select Image", command=open_file)
 button.pack(pady=10)
 
+image_label = tk.Label(frame)
+image_label.pack()
+
 result_label = tk.Label(frame, text="Predicted Category: None", font=("Arial", 12))
-result_label.pack()
+result_label.pack(pady=10)
 
 # Run the tkinter main loop
 root.mainloop()
