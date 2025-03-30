@@ -12,8 +12,13 @@ IMG_HEIGHT = 30
 NUM_CATEGORIES = 43
 CURRENT_DIR = os.path.dirname(__file__)
 
+# Set the model path
+MODEL_PATH = sys.argv[1] if len(sys.argv) == 2 else os.path.join(CURRENT_DIR,"best_model.h5")
+
+if not os.path.exists(MODEL_PATH):
+    sys.exit("Model not found. Please train the model first.")
+    
 # Load the trained model
-MODEL_PATH = os.path.join(CURRENT_DIR,"best_model.h5")
 model = load_model(MODEL_PATH)
 
 # String representation of the gtsrb dataset categories

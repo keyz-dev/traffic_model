@@ -55,8 +55,14 @@ conda activate tf
 pip install pillow numpy sklearn
 ```
 
-5. Run the application
+5. Train the model
 ```bash
 cd CALEB
 python traffic.py path/to/data_directory path/to/model.h5
+```
+
+6. Use the model
+Still within CALEB directory
+```bash
+python predict_sign.py path/to/model.h5
 ```
