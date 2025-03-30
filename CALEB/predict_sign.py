@@ -63,6 +63,8 @@ GTSRB_CATEGORIES = [
     "End of no passing by vehicles over 3.5 metric tons"
 ]
 
+print(len(GTSRB_CATEGORIES))
+
 
 def predict_image(file_path):
     """
@@ -116,7 +118,6 @@ def open_file():
 # Create the tkinter interface
 root = tk.Tk()
 root.title("Traffic Sign Predictor")
-# root.resizable(False, False)
 
 # Set dimensions of the interface
 screen_width = root.winfo_screenwidth()
