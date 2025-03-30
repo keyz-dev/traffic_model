@@ -68,9 +68,6 @@ GTSRB_CATEGORIES = [
     "End of no passing by vehicles over 3.5 metric tons"
 ]
 
-print(len(GTSRB_CATEGORIES))
-
-
 def predict_image(file_path):
     """
     Predict the category of the traffic sign in the given image file.
@@ -88,6 +85,7 @@ def predict_image(file_path):
         accuracy = np.max(predictions)
 
         return predicted_category, GTSRB_CATEGORIES[predicted_category], accuracy
+    
     except Exception as e:
         messagebox.showerror("Error", f"Failed to predict image: {e}")
         return None

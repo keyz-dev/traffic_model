@@ -3,10 +3,11 @@ import numpy as np
 import os
 import sys
 import tensorflow as tf
-
+from tensorflow.keras.callbacks import EarlyStopping
 from sklearn.model_selection import train_test_split
+from tensorflow.keras.regularizers import l2
 
-EPOCHS = 10
+EPOCHS = 20
 IMG_WIDTH = 30
 IMG_HEIGHT = 30
 NUM_CATEGORIES = 43
@@ -24,14 +25,19 @@ def main():
     # Split data into training and testing sets
     labels = tf.keras.utils.to_categorical(labels)
     x_train, x_test, y_train, y_test = train_test_split(
-        np.array(images), np.array(labels), test_size=TEST_SIZE
+        np.array(images), np.array(labels), test_size=TEST_SIZE, random_state=42
     )
 
     # Get a compiled neural network
     model = get_model()
+    
+    # use Early Stopping to stop if no improvement in training
+    early_stopping = EarlyStopping(
+        monitor="val_loss", patience=5, restore_best_weights=True
+    )
 
     # Fit model on training data
-    model.fit(x_train, y_train, epochs=EPOCHS)
+    model.fit(x_train, y_train, epochs=EPOCHS, callbacks=[early_stopping])
 
     # Evaluate neural network performance
     model.evaluate(x_test,  y_test, verbose=2)
@@ -40,7 +46,7 @@ def main():
     if len(sys.argv) == 3:
         filename = sys.argv[2]
         model.save(filename)
-        print(f"Model saved to {filename}.")
+        print(f"Model saved to {filename}")
 
 
 def load_data(data_dir):
@@ -77,6 +83,7 @@ def load_data(data_dir):
                 
                 # Resize image
                 image = cv2.resize(image, (IMG_WIDTH, IMG_HEIGHT))
+                image = image / 255.0
                 # Append images and labels to the respective list
                 images.append(image)
                 labels.append(category)
@@ -100,14 +107,19 @@ def get_model():
 
         # Add a convolutional layer with 32 filters, a 3x3 kernel, ReLU activation, and input shape
         model.add(tf.keras.layers.Conv2D(
-            32, (3, 3), activation="relu", input_shape=(IMG_WIDTH, IMG_HEIGHT, 3)
+            32, (3, 3), activation="relu", kernel_regularizer=l2(0.001), input_shape=(IMG_WIDTH, IMG_HEIGHT, 3)
         ))
 
         # Add a max-pooling layer with a 2x2 pool size
         model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2)))
-        model.add(tf.keras.layers.Conv2D(64, (3, 3), activation="relu"))
-
+        # Add a dropout layer to reduce overfitting
+        model.add(tf.keras.layers.Dropout(0.2))
+        
+        model.add(tf.keras.layers.Conv2D(64, (3, 3), activation="relu", kernel_regularizer=l2(0.001)))
         model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2)))
+        # Add a dropout layer to reduce overfitting
+        model.add(tf.keras.layers.Dropout(0.2))
+        
         model.add(tf.keras.layers.Flatten())
         
         # Add a hidden layer with 128 units and ReLU activation
