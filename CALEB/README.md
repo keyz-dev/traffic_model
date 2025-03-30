@@ -14,22 +14,24 @@ After training the model with the the initial parameters and structure granted b
 
 Despite the ~96% accuracy the model gave out during training, the results where super awkward (1 out of 10 images tested were on track, 10% accurate)
 
-Image
 
 ## Parameter Tuning
 After seeing how inaccuate my model was, i tried to optimize the output by varying some parameters
 
 1. Number of Filters
-    As the Feature extractors in the CNN, 
+As the Feature extractors in the CNN, 
 
 2. Kernel Size
-    Increasing the number of kernel layers from two to three and from 16, through 32 to 64, i think the model has a greater chance of performing better
+- Increasing the number of kernel layers from two to three and from 16, through 32 to 64, i think the model has a greater chance of performing better
+- Using the kernel regularizer from keras improved the accuracy of the model
 
 3. Dropout Rate
-    Averaging the number of disabled neurons during training by setting 0.4 helped a lil bit
+- Averaging the number of disabled neurons during training by setting 0.4 helped a lil bit.
+- Disabling more neurons during training led to an accuracy of 50% for my test dataset as it highly prevents overfitting
+- 
 
 4. Number of Epochs
-    Increasing the cycles from 10 to 25 added a little bit of precision to the model's prediction
+Increasing the cycles from 10 to 25 added a little bit of precision to the model's prediction
 
 
 ## Getting Started with the Training / using the model

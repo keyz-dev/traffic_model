@@ -7,11 +7,11 @@ from tensorflow.keras.callbacks import EarlyStopping
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.regularizers import l2
 
-EPOCHS = 20
-IMG_WIDTH = 30
+EPOCHS = 25
+IMG_WIDTH= 30
 IMG_HEIGHT = 30
 NUM_CATEGORIES = 43
-TEST_SIZE = 0.4
+TEST_SIZE = 0.3
 
 
 def main():
@@ -113,12 +113,12 @@ def get_model():
         # Add a max-pooling layer with a 2x2 pool size
         model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2)))
         # Add a dropout layer to reduce overfitting
-        model.add(tf.keras.layers.Dropout(0.2))
+        model.add(tf.keras.layers.Dropout(0.3))
         
         model.add(tf.keras.layers.Conv2D(64, (3, 3), activation="relu", kernel_regularizer=l2(0.001)))
         model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2)))
         # Add a dropout layer to reduce overfitting
-        model.add(tf.keras.layers.Dropout(0.2))
+        model.add(tf.keras.layers.Dropout(0.3))
         
         model.add(tf.keras.layers.Flatten())
         
